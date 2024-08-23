@@ -1,0 +1,13 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Install tmux
+      community.general.homebrew:
+        name: tmux
+        state: present
+      become: false
+    - name: Install Neovim
+      community.general.homebrew:
+        name: neovim
+        state: present
+      become: false
