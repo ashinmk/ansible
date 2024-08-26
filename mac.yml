@@ -1,6 +1,14 @@
 - hosts: localhost
   become: true
+  vars:
+    source_key: "./.ssh/id_rsa"
+    dest_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
   tasks:
+    - name: Install git
+      community.general.homebrew:
+        name: git
+        state: present
+      become: false
     - name: Install tmux
       community.general.homebrew:
         name: tmux
@@ -11,3 +19,19 @@
         name: neovim
         state: present
       become: false
+    - name: Ensure the SSH directory exists
+      ansible.builtin.file:
+        path: "~/.ssh"
+        state: directory
+        mode: '0700'
+    - name: Decrypt and copy the SSH private key
+      ansible.builtin.copy:
+        src: "{{ source_key }}"
+        dest: "{{ dest_key }}"
+        mode: '0600'
+        decrypt: yes
+    - name: Copy the SSH public key
+      ansible.builtin.copy:
+        src: "{{ source_key }}.pub"
+        dest: "{{ dest_key }}.pub"
+        mode: '0600'
