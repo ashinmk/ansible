@@ -1,2 +1,2 @@
 brew install ansible
-ansbile-playbook mac.yml
+ansible-playbook mac.yml --ask-vault-pass
