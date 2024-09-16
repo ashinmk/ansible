@@ -19,6 +19,11 @@
         name: neovim
         state: present
       become: false
+    - name: Install fzf
+      community.general.homebrew:
+        name: fzf
+        state: present
+      become: false
     - name: Ensure the SSH directory exists
       ansible.builtin.file:
         path: "~/.ssh"
@@ -37,4 +42,12 @@
         mode: '0600'
     - name: Oh-My-Zsh
       shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > ~/.oh-my-installer && chmod +x ~/.oh-my-installer && ~/.oh-my-installer
-
+    - name: Clone dotfiles
+      git:
+        repo: 'https://github.com/ashinmk/dotfiles.git'
+        dest:  "{{ lookup('env', 'HOME') }}/dotfiles"
+        version: 'ashin-test'  # or any branch/tag/commit
+    - name: Install dotfiles
+      shell: zsh "{{ lookup('env', 'HOME') }}/dotfiles/install.sh"
+ 
+          
